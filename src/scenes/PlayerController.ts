@@ -23,7 +23,6 @@ export default class PlayerController
 		this.sprite = sprite
 		this.cursors = cursors
 		this.obstacles = obstacles
-
 		this.createAnimations()
 
 		this.stateMachine = new StateMachine(this, 'player')

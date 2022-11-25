@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import {BeeControl} from './Bee'
 import ObstaclesController from './ObstaclesController'
 import PlayerController from './PlayerController'
 import SnowmanController from './SnowmanController'
@@ -7,10 +8,11 @@ export default class Game extends Phaser.Scene
 {
 	private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
 
-	private penquin?: Phaser.Physics.Matter.Sprite
+	private penquin!: Phaser.Physics.Matter.Sprite
 	private playerController?: PlayerController
 	private obstacles!: ObstaclesController
 	private snowmen: SnowmanController[] = []
+	private bees : BeeControl[] = []
 
 	constructor()
 	{
@@ -22,6 +24,7 @@ export default class Game extends Phaser.Scene
 		this.cursors = this.input.keyboard.createCursorKeys()
 		this.obstacles = new ObstaclesController()
 		this.snowmen = []
+		this.bees = []
 
 		this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
 			this.destroy()
@@ -38,6 +41,8 @@ export default class Game extends Phaser.Scene
 		this.load.image('health', 'assets/health.png')
 
 		this.load.atlas('snowman', 'assets/snowman.png', 'assets/snowman.json')
+		this.load.atlas('bee', 'assets/Bee.png', 'assets/Bee.json')
+		
 	}
 
 	create()
@@ -116,10 +121,18 @@ export default class Game extends Phaser.Scene
 					this.obstacles.add('spikes', spike)
 					break
 				}
+
+				case 'bee':
+					const bee = this.matter.add.sprite(x, y, 'bee').setFixedRotation();
+					this.bees.push(new BeeControl(this, bee, this.penquin))
+					this.obstacles.add('bee', bee.body as MatterJS.BodyType)
+					break
+
 			}
 		 })
 
 		this.matter.world.convertTilemapLayer(ground)
+		
 	}
 
 	destroy()
@@ -131,7 +144,7 @@ export default class Game extends Phaser.Scene
 	update(t: number, dt: number)
 	{
 		this.playerController?.update(dt)
-
 		this.snowmen.forEach(snowman => snowman.update(dt))
+		this.bees.forEach(bee => bee.update(dt))
 	}
 }

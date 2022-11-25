@@ -1,23 +1,27 @@
+import { Scene } from 'phaser'
 import StateMachine from '../statemachine/StateMachine'
 import { sharedInstance as events } from './EventCenter'
 
-export default class SnowmanController
-{   public health
+
+
+export class BeeControl
+{
 	private scene: Phaser.Scene
 	private sprite: Phaser.Physics.Matter.Sprite
 	private stateMachine: StateMachine
-
 	private moveTime = 0
-
-	constructor(scene: Phaser.Scene, sprite: Phaser.Physics.Matter.Sprite)
-	{   
-		this.health = 1;
+	private xbeam = 0
+	private ybeam = 0
+	private peguin: Phaser.Physics.Matter.Sprite
+	private beam !: Phaser.Physics.Matter.Sprite
+	constructor(scene: Phaser.Scene, sprite: Phaser.Physics.Matter.Sprite, peguin: Phaser.Physics.Matter.Sprite)
+	{
 		this.scene = scene
 		this.sprite = sprite
-
+		this.peguin = peguin
 		this.createAnimations()
-
-		this.stateMachine = new StateMachine(this, 'snowman')
+        this.sprite.setIgnoreGravity(true);
+		this.stateMachine = new StateMachine(this, 'bee')
 
 		this.stateMachine.addState('idle', {
 			onEnter: this.idleOnEnter
@@ -31,18 +35,22 @@ export default class SnowmanController
 			onUpdate: this.moveRightOnUpdate
 		})
 		.addState('dead')
+		.addState('shoot', {
+			onEnter: this.BeeShootEnter,
+			onUpdate: this.BeeShoot
+		})
 		.setState('idle')
-
-		events.on('snowman-stomped', this.handleStomped, this)
+         
+		events.on('bee-stomped', this.handleStomped, this)
 	}
 
 	destroy()
 	{
-		events.off('snowman-stomped', this.handleStomped, this)
+		events.off('bee-stomped', this.handleStomped, this)
 	}
 
 	update(dt: number)
-	{   
+	{
 		this.stateMachine.update(dt)
 	}
 
@@ -50,27 +58,27 @@ export default class SnowmanController
 	{
 		this.sprite.anims.create({
 			key: 'idle',
-			frames: [{ key: 'snowman', frame: 'snowman_left_1.png' }]
+			frames: [{ key: 'bee', frame: 'bee_left_1.png' }]
 		})
 
 		this.sprite.anims.create({
 			key: 'move-left',
-			frames: this.sprite.anims.generateFrameNames('snowman', {
+			frames: this.sprite.anims.generateFrameNames('bee', {
 				start: 1,
-				end: 2,
-				prefix: 'snowman_left_',
+				end: 4,
+				prefix: 'bee_left_',
 				suffix: '.png'
 			}),
-			frameRate: 5,
+			frameRate: 10,
 			repeat: -1
 		})
 
 		this.sprite.anims.create({
 			key: 'move-right',
-			frames: this.sprite.anims.generateFrameNames('snowman', {
+			frames: this.sprite.anims.generateFrameNames('bee', {
 				start: 1,
-				end: 2,
-				prefix: 'snowman_right_',
+				end: 4,
+				prefix: 'bee_left_',
 				suffix: '.png'
 			}),
 			frameRate: 5,
@@ -115,7 +123,7 @@ export default class SnowmanController
 		this.sprite.play('move-right')
 	}
 
-	private moveRightOnUpdate(dt: number) 
+	private moveRightOnUpdate(dt: number)
 	{
 		this.moveTime += dt
 		this.sprite.setVelocityX(3)
@@ -123,17 +131,19 @@ export default class SnowmanController
 		if (this.moveTime > 2000)
 		{
 			this.stateMachine.setState('move-left')
+			this.stateMachine.setState('shoot')
 		}
 	}
 
-	private handleStomped(snowman: Phaser.Physics.Matter.Sprite)
+	private handleStomped(bee: Phaser.Physics.Matter.Sprite)
 	{
-		if (this.sprite !== snowman)
+		if (this.sprite !== bee)
 		{
 			return
 		}
-        if (this.health == 0){
-		events.off('snowman-stomped', this.handleStomped, this)
+
+		events.off('bee-stomped', this.handleStomped, this)
+
 		this.scene.tweens.add({
 			targets: this.sprite,
 			displayHeight: 0,
@@ -144,10 +154,31 @@ export default class SnowmanController
 			}
 		})
 		this.stateMachine.setState('dead')
-	    }
-		else{
-			this.health--;
-			return;
-		}
+	}
+    
+
+    private BeeShootEnter(){
+		this.xbeam = this.sprite.x;
+		this.ybeam = this.sprite.y + 64;
+		this.beam = this.scene.matter.add.sprite(this.xbeam, this.ybeam, 'bee');
+	}
+
+	private BeeShoot(){
+		this.beam.setVelocity(2, 3)
+
+		if (this.beam){
+		if(this.beam.x - this.sprite.x > 5 || this.beam.y - this.sprite.y > 5 ||   this.sprite.x - this.beam.x > 5 || this.sprite.y - this.beam.y > 5)
+		this.scene.tweens.add({
+			targets: this.beam,
+			displayHeight: 0,
+			onComplete: () => {
+				this.beam.destroy()
+			}
+		})
+	}
+        let random = Phaser.Math.Between(1, 2);
+		if(random = 1)this.stateMachine.setState('move-left');
+		else this.stateMachine.setState('move-right')
 	}
 }
+
