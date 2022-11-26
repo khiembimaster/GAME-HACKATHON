@@ -35,7 +35,8 @@ export default class Game extends Phaser.Scene {
 	preload() {
 		this.load.atlas('penquin', 'assets/penquin.png', 'assets/penquin.json')
 		this.load.image('tiles', 'assets/sheet.png')
-		this.load.tilemapTiledJSON('tilemap', 'assets/game.json')
+
+		this.load.tilemapTiledJSON('tilemap', 'assets/map.json')
 
 		this.load.image('star', 'assets/star.png')
 		this.load.image('health', 'assets/health.png')
