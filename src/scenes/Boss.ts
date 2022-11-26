@@ -4,7 +4,7 @@ import { sharedInstance as events } from './EventCenter'
 
 
 
-export class BeeControl {
+export class BossControl {
 	private scene: Phaser.Scene
 	private sprite: Phaser.Physics.Matter.Sprite
 	private stateMachine: StateMachine
@@ -15,6 +15,7 @@ export class BeeControl {
 	private path !: Phaser.Curves.Path
 	private health
 	private beams
+    
 
 	constructor(scene: Phaser.Scene, sprite: Phaser.Physics.Matter.Sprite) {
 		this.beams = []
@@ -23,8 +24,8 @@ export class BeeControl {
 		this.health = 1
 		this.createAnimations()
 		this.sprite.setIgnoreGravity(true);
+		this.beam
 		this.stateMachine = new StateMachine(this, 'boss')
-
 		//let graphics = scene.add.graphics();
 
 		//  graphics.lineStyle(1, 0xffffff, 1);
@@ -42,14 +43,14 @@ export class BeeControl {
 				onUpdate: this.moveRightOnUpdate
 			})
 			.addState('dead')
-			.addState('run-down-left', {
+			/*.addState('run-down-left', {
 				onEnter: this.DownLeftEnter,
 				onUpdate: this.DownLeftDrop
 			})
 			.addState('run-down-right', {
 				onEnter: this.DownRightEnter,
 				onUpdate: this.DownRightDrop
-			})
+			})*/
 			.setState('idle');
 		events.on('snowman-stomped', this.handleStomped, this)
 	}
@@ -61,8 +62,6 @@ export class BeeControl {
 	update(dt: number) {
 		this.stateMachine.update(dt)
 	}
-
-
 
 	private createAnimations() {
 		this.sprite.anims.create({
@@ -96,12 +95,14 @@ export class BeeControl {
 	}
 
 
-	private DownLeftEnter() {
+	/*private DownLeftEnter() {
 
 		this.sprite.play('move-left')
 	}
 
 	private DownLeftDrop() {
+		if (this.sprite.body === undefined)
+			return
 		this.sprite.setVelocityX(0);
 		this.sprite.setVelocityY(6)
 		this.scene.time.delayedCall(1000, () => {
@@ -109,21 +110,24 @@ export class BeeControl {
 				targets: this.sprite,
 				duration: 300,
 				onComplete: () => {
+					if (this.sprite.body === undefined)
+						this.stateMachine.setState('dead')
 					this.moveTime = 0;
 					this.sprite.setVelocity(0, -5)
 					this.stateMachine.setState('move-right')
 				}
 			})
 		})
+	}*/
 
-	}
-
-	private DownRightEnter() {
+	/*private DownRightEnter() {
 
 		this.sprite.play('move-right')
 	}
 
 	private DownRightDrop() {
+		if (this.sprite.body === undefined)
+			return
 		this.sprite.setVelocityX(0);
 		this.sprite.setVelocityY(6)
 		this.scene.time.delayedCall(1000, () => {
@@ -131,17 +135,20 @@ export class BeeControl {
 				targets: this.sprite,
 				duration: 300,
 				onComplete: () => {
+					if (this.sprite.body === undefined)
+						this.stateMachine.setState('dead')
 					this.moveTime = 0;
 					this.sprite.setVelocity(0, -5)
-					//this.sprite.body.velocity.y = -5
 					this.stateMachine.setState('move-left')
 				}
 			})
 		})
 
-	}
+	}*/
 
 	private idleOnEnter() {
+		// if (this.sprite.body === undefined)
+		// 				this.stateMachine.setState('dead')
 		this.sprite.play('move-right')
 		const r = Phaser.Math.Between(1, 100)
 		if (r < 50) {
@@ -158,23 +165,30 @@ export class BeeControl {
 	}
 
 	private moveLeftOnUpdate(dt: number) {
+		// if (this.sprite.body === undefined)
+		// 	this.stateMachine.setState('dead')
 		this.sprite.setVelocityY(0)
 		this.moveTime += dt
 		this.sprite.setVelocityX(-3)
-		if ((this.moveTime > 1000 && this.moveTime < 1020)) {
+		
+		if (this.moveTime > 1000 && this.moveTime < 1015) {
 			this.xbeam = this.sprite.x;
 			this.ybeam = this.sprite.y + 96;
 			this.beam = this.scene.matter.add.sprite(this.xbeam, this.ybeam, 'boss');
-			this.beam.setIgnoreGravity(false);
-			this.beam.setOnCollide((data: MatterJS.ICollisionPair) => {
+			const r = Phaser.Math.Between(1, 100)
+			if (r < 50) {
+				this.beam.setVelocity(-(r % 10), 10)
+			}
+			else {
+				this.beam.setVelocity((r - 50) % 10, 10)
+			}
+			this.scene.time.delayedCall(1000, () => {
 				this.beam.destroy()
 			})
-			this.beam.setVelocity(2, 3)
 		}
-		if (this.moveTime > 2000) {
-			this.stateMachine.setState('run-down-left')
-		}
-
+		    if (this.moveTime > 2000) {
+			    this.stateMachine.setState('move-right')
+	    	}
 	}
 
 
@@ -184,23 +198,29 @@ export class BeeControl {
 	}
 
 	private moveRightOnUpdate(dt: number) {
+		// if (this.sprite.body === undefined)
+		// 	this.stateMachine.setState('dead')
 		this.sprite.setVelocityY(0);
 		this.moveTime += dt
 		this.sprite.setVelocityX(3)
-		if (this.moveTime > 1000 && this.moveTime < 1020) {
+		if (this.moveTime > 1000 && this.moveTime < 1015) {
 			this.xbeam = this.sprite.x;
-			this.ybeam = this.sprite.y + 70;
+			this.ybeam = this.sprite.y + 96;
 			this.beam = this.scene.matter.add.sprite(this.xbeam, this.ybeam, 'boss');
-			this.beam.setOnCollide((data: MatterJS.ICollisionPair) => {
+			const r = Phaser.Math.Between(1, 100)
+			if (r < 50) {
+				this.beam.setVelocity(-(r % 10), 10)
+			}
+			else {
+				this.beam.setVelocity((r - 50) % 10, 10)
+			}
+			this.scene.time.delayedCall(1000, () => {
 				this.beam.destroy()
 			})
-			this.beam.setVelocity(2, 3)
 		}
-		else {
-			if (this.moveTime > 2000) {
-				this.stateMachine.setState('run-down-right')
-			}
-		}
+		    if (this.moveTime > 2000) {
+			    this.stateMachine.setState('move-left')
+	    }
 	}
 
 	private handleStomped(snowman: Phaser.Physics.Matter.Sprite) {
@@ -213,15 +233,14 @@ export class BeeControl {
 				this.sprite.setVelocity(0, 0);
 				this.scene.tweens.add({
 					targets: this.sprite,
-					displayHeight: -10,
-					y: this.sprite.y + (this.sprite.displayHeight * 0.5),
-					duration: 200,
 					onComplete: () => {
-						this.sprite.destroy()
+						if (this.sprite === undefined)
+							return
 						this.stateMachine.setState('dead')
+						this.sprite.destroy()
 					}
 				})
-				this.stateMachine.setState('dead')
+				// this.stateMachine.setState('dead')
 			}
 			else {
 				this.health--;
@@ -230,6 +249,4 @@ export class BeeControl {
 		}
 
 	}
-
-	/////////////////////////////////
 }

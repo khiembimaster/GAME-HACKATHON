@@ -1,10 +1,10 @@
 import Phaser from 'phaser'
-import { BeeControl } from './Bee'
+import { BossControl } from './Boss'
 import ObstaclesController from './ObstaclesController'
 import PlayerController from './PlayerController'
-import SnowmanController from './SnowmanController'
+import XLowControl from './XLow'
 import XHighControl from './XHigh'
-import UpYControl from './Y'
+import YControl from './Y'
 import TreeController from './TreeController'
 
 export default class Game extends Phaser.Scene {
@@ -12,9 +12,9 @@ export default class Game extends Phaser.Scene {
 	private penquin!: Phaser.Physics.Matter.Sprite
 	private playerController?: PlayerController
 	private obstacles!: ObstaclesController
-	private XLows: SnowmanController[] = []
-	private bosses: BeeControl[] = []
-    private Ys : UpYControl[] = []
+	private XLows: XLowControl[] = []
+	private bosses: BossControl[] = []
+    private Ys : YControl[] = []
     private XHighs : XHighControl[] = []
 	private tree: TreeController[] = []
 	attack!: Phaser.Input.Keyboard.Key
@@ -93,7 +93,7 @@ export default class Game extends Phaser.Scene {
 					const XLow = this.matter.add.sprite(x, y, 'XLow')
 						.setFixedRotation()
 
-					this.XLows.push(new SnowmanController(this, XLow))
+					this.XLows.push(new XLowControl(this, XLow))
 					this.obstacles.add('XLow', XLow.body as MatterJS.BodyType)
 					break
 				}
@@ -133,14 +133,14 @@ export default class Game extends Phaser.Scene {
 				case 'boss':
 					{
 					const boss = this.matter.add.sprite(x, y, 'boss').setFixedRotation();
-					this.bosses.push(new BeeControl(this, boss))
+					this.bosses.push(new BossControl(this, boss))
 					this.obstacles.add('boss', boss.body as MatterJS.BodyType)
 					break
 					}
 				case 'Y':
 					{
 					const Y = this.matter.add.sprite(x, y, 'Y').setFixedRotation();
-					this.Ys.push(new UpYControl(this, Y))
+					this.Ys.push(new YControl(this, Y))
 					this.obstacles.add('Y', Y.body as MatterJS.BodyType)
 					break
 					}

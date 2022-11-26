@@ -1,7 +1,7 @@
 import StateMachine from '../statemachine/StateMachine'
 import { sharedInstance as events } from './EventCenter'
 
-export default class SnowmanController
+export default class XLowControl
 {   
 	public health: number
 	private scene: Phaser.Scene
@@ -31,10 +31,7 @@ export default class SnowmanController
 			onEnter: this.moveRightOnEnter,
 			onUpdate: this.moveRightOnUpdate
 		})
-		.addState('dead', {
-			onEnter: this.deadOnEnter,
-			onUpdate: this.deadOnUpdate,
-		})
+		.addState('dead')
 		.setState('idle')
 
 		events.on('snowman-stomped', this.handleStomped, this)
@@ -154,14 +151,11 @@ export default class SnowmanController
 		    events.off('snowman-stomped', this.handleStomped, this)
 		    this.scene.tweens.add({
 		        targets: this.sprite,
-			    displayHeight: -100,
-			    y: this.sprite.y + (this.sprite.displayHeight * 0.5),
-			    duration: 200,
 			    onComplete: () => {
 				    this.sprite.destroy()
+					this.stateMachine.setState('dead')
 			    }
 		    })
-		    this.stateMachine.setState('dead')
 	        }
 			else{
 				this.health--;

@@ -1,7 +1,7 @@
 import StateMachine from '../statemachine/StateMachine'
 import { sharedInstance as events } from './EventCenter'
 
-export default class UpYControl
+export default class YControl
 {   public health
 	private scene: Phaser.Scene
 	private sprite: Phaser.Physics.Matter.Sprite
@@ -39,7 +39,7 @@ export default class UpYControl
 
 	update(dt: number)
 	{   
-        console.log(this.moveTime)
+
 		this.stateMachine.update(dt)
 	}
 
@@ -57,7 +57,9 @@ export default class UpYControl
 	}
 
 	private idleOnEnter()
-	{
+	
+	{   if (!this.sprite)return;
+		this.sprite.setVelocity(0, 20);
 		this.sprite.play('idle')
         this.scene.time.delayedCall(1000, () => {
             this.stateMachine.setState('jump')
@@ -71,9 +73,9 @@ export default class UpYControl
     
     private JumponUpdate(dt : number){
         this.moveTime += dt;
-        this.sprite.setVelocityY(-20);
+		if (!this.sprite)return;
+        this.sprite.setVelocity(0, -20);
         if (this.moveTime > 1000){
-            this.sprite.setVelocityY(20);
             this.stateMachine.setState('idle')
         }
     }
@@ -88,14 +90,11 @@ export default class UpYControl
 		events.off('snowman-stomped', this.handleStomped, this)
 		this.scene.tweens.add({
 			targets: this.sprite,
-			displayHeight: -100,
-			y: this.sprite.y + (this.sprite.displayHeight * 0.5),
-			duration: 200,
 			onComplete: () => {
 				this.sprite.destroy()
+				this.stateMachine.setState('dead')
 			}
 		})
-		this.stateMachine.setState('dead')
 	    }
 		else{
 			this.health--;
