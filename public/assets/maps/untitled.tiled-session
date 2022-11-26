@@ -1,0 +1,74 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
+        "C:/Users/user/Hackathon/Demo2/Mossy - TileSet.tsx": {
+            "dynamicWrapping": false
+        },
+        "C:/Users/user/Hackathon/Demo2/map/Hills.tsx": {
+            "dynamicWrapping": false
+        },
+        "C:/Users/user/Hackathon/Demo2/map/final.tmx": {
+            "scale": 0.0232,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 12866.37931034483,
+                "y": 12564.655172413793
+            }
+        },
+        "C:/Users/user/Hackathon/Img/32x32/Mossy Tileset/Hills.tsx": {
+            "dynamicWrapping": true
+        },
+        "mainMap.tmx": {
+            "scale": 0.9517,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1319.2182410423452,
+                "y": -49.91068614059054
+            }
+        },
+        "player.tsx": {
+            "scaleInEditor": 1
+        },
+        "slime.tsx": {
+            "scaleInEditor": 1
+        },
+        "tiledemo.tsx": {
+            "scaleInDock": 0.5276,
+            "scaleInEditor": 3.4729
+        },
+        "tiles.tsx": {
+            "scaleInDock": 2.2371,
+            "scaleInEditor": 1
+        }
+    },
+    "last.imagePath": "C:/Users/Admin/Desktop/PROJECT phaser/PLATFORMER TEMPLATE/GAME-HACKATHON/public/assets/send",
+    "map.height": 60,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 98,
+    "openFiles": [
+    ],
+    "project": "untitled.tiled-project",
+    "recentFiles": [
+        "slime.tsx",
+        "player.tsx",
+        "mainMap.tmx",
+        "tiles.tsx",
+        "tiledemo.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
+}

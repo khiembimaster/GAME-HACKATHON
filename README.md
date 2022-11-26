@@ -23,3 +23,8 @@ npm run start
 ## License
 
 [MIT License](https://github.com/ourcade/sidescrolling-platformer-template-phaser3/blob/master/LICENSE)
+
+TODO:
+1. Make colletibles when tree grow
+2. Make a game over screen
+3. Find assets for the game (dig animation, water, dump)

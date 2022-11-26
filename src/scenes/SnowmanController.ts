@@ -2,12 +2,13 @@ import StateMachine from '../statemachine/StateMachine'
 import { sharedInstance as events } from './EventCenter'
 
 export default class SnowmanController
-{   public health
+{   
+	public health: number
 	private scene: Phaser.Scene
 	private sprite: Phaser.Physics.Matter.Sprite
 	private stateMachine: StateMachine
-
 	private moveTime = 0
+	private spawnTime: number = 0
 
 	constructor(scene: Phaser.Scene, sprite: Phaser.Physics.Matter.Sprite)
 	{   
@@ -30,10 +31,27 @@ export default class SnowmanController
 			onEnter: this.moveRightOnEnter,
 			onUpdate: this.moveRightOnUpdate
 		})
-		.addState('dead')
+		.addState('dead', {
+			onEnter: this.deadOnEnter,
+			onUpdate: this.deadOnUpdate,
+		})
 		.setState('idle')
 
 		events.on('snowman-stomped', this.handleStomped, this)
+	}
+
+	deadOnEnter(){
+		this.spawnTime = 2000
+	}
+
+	deadOnUpdate(){
+		if(this.spawnTime <= 0){
+			this.sprite.setScale(1)
+			this.health = 1
+			this.stateMachine.setState('idle');
+			events.on('snowman-stomped', this.handleStomped, this)
+		}
+		this.spawnTime--
 	}
 
 	destroy()
@@ -133,17 +151,12 @@ export default class SnowmanController
 			return
 		}
         if (this.health == 0){
-		events.off('snowman-stomped', this.handleStomped, this)
-		this.scene.tweens.add({
-			targets: this.sprite,
-			displayHeight: -100,
-			y: this.sprite.y + (this.sprite.displayHeight * 0.5),
-			duration: 200,
-			onComplete: () => {
-				this.sprite.destroy()
-			}
-		})
-		this.stateMachine.setState('dead')
+			events.off('snowman-stomped', this.handleStomped, this)
+			this.sprite.setScale(0.1)
+			// this.sprite.setStatic(true)
+			// this.sprite.setY(this.sprite.y + this.sprite.height)
+			// this.sprite.setActive(false)
+			this.stateMachine.setState('dead')
 	    }
 		else{
 			this.health--;
