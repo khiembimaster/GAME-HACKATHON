@@ -21,13 +21,20 @@ export default class UI extends Phaser.Scene
 		this.starsCollected = 0
 	}
 
+	preload() {
+        this.load.image('box', 'assets/image/grey_boxCross.png')
+	}
+
 	create()
 	{
+		this.add.image(0, 5, 'box').setOrigin(0,0).setScale(2.2, 0.6)
+		
 		this.graphics = this.add.graphics()
 		this.setHealthBar(100)
 
-		this.starsLabel = this.add.text(10, 35, 'Stars: 0', {
-			fontSize: '32px'
+		this.starsLabel = this.add.text(10, 33, 'Sun: 0', {
+			fontSize: '32px',
+			fill: '#000'
 		})
 
 		events.on('star-collected', this.handleStarCollected, this)
@@ -73,6 +80,6 @@ export default class UI extends Phaser.Scene
 	private handleStarCollected(value: number)
 	{
 		this.starsCollected = value
-		this.starsLabel.text = `Stars: ${this.starsCollected}`
+		this.starsLabel.text = `Sun: ${this.starsCollected}`
 	}
 }

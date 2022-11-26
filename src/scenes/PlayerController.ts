@@ -101,6 +101,8 @@ export default class PlayerController {
 			const sprite = gameObject as Phaser.Physics.Matter.Sprite
 			const type = sprite.getData('type')
 
+			// sprite.setFriction(0.05, 0.1, 0.1)
+
 			switch (type) {
 				case 'star':
 					{
@@ -164,7 +166,7 @@ export default class PlayerController {
 	}
 
 	private walkOnUpdate() {
-		const speed = 5
+		const speed = 1
 
 		if (this.cursors.left.isDown) {
 			this.sprite.flipX = true
@@ -194,7 +196,7 @@ export default class PlayerController {
 	}
 
 	private jumpOnUpdate() {
-		const speed = 5
+		const speed = 2
 
 		if (this.cursors.left.isDown) {
 			this.sprite.flipX = true
@@ -300,6 +302,8 @@ export default class PlayerController {
 		this.sprite.setVelocityY(-10)
 
 		events.emit('snowman-stomped', this.lastSnowman)
+		seeds++
+
 
 		this.stateMachine.setState('idle')
 	}

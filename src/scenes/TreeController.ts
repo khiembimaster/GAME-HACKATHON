@@ -4,44 +4,40 @@ import { sharedInstance as events } from './EventCenter'
 export default class TreeController {
     private water: number = 1
     private scene: Phaser.Scene
-    private sprite: Phaser.Physics.Matter.Image
-    private stateMachine: StateMachine
+    private sprite: Phaser.Physics.Matter.Sprite
     private timer!: Phaser.Time.TimerEvent
 
-    constructor(scene: Phaser.Scene, image: Phaser.Physics.Matter.Sprite) {
+    constructor(scene: Phaser.Scene, sprite: Phaser.Physics.Matter.Sprite) {
         this.scene = scene
-        this.sprite = image
+        this.sprite = sprite
 
-        this.stateMachine = new StateMachine(this, 'tree')
-
-        this.stateMachine.addState('idle', {
-                onEnter: this.enterTreeIdle,
-            })
-
-        this.stateMachine.setState('idle')
-
+        this.createAnimations()
         events.on('waterTree', this.enterTreeGrow, this)
     }
 
-    update(dt: number) {
-        this.stateMachine.update(dt)
-    }
-
     private enterTreeGrow(value: number) {
-        this.timer.remove()
-        this.water += value * 0.2
-        this.sprite.setScale(this.water)
+        this.water += value * 0.5
 
-        this.stateMachine.setState('idle')
+        this.sprite.anims.play('tree-grow', true)
+        this.sprite.setScale(1, this.water)
+
+        // console.log(value)   
+        // if(this.water > 3){
+
+        // }
     }
 
-    private enterTreeIdle() {
-        this.timer = this.scene.time.addEvent({
-            delay: 100000,
-            callback: () => {
-                this.water -= 1
-                this.sprite.setScale(this.water)
-            }
+    createAnimations() {
+        this.sprite.anims.create({
+            key: 'tree-growth',
+            frameRate: 1,
+            frames: this.sprite.anims.generateFrameNames('tree', {
+                start: 1,
+                end: 5,
+                prefix: 'tree-',
+                suffix: '.png'
+            }),
+            repeat: 1
         })
     }
 }
