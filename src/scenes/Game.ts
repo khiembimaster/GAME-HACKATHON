@@ -42,7 +42,6 @@ export default class Game extends Phaser.Scene
 
 		this.load.atlas('snowman', 'assets/snowman.png', 'assets/snowman.json')
 		this.load.atlas('bee', 'assets/Bee.png', 'assets/Bee.json')
-		
 	}
 
 	create()
@@ -123,11 +122,12 @@ export default class Game extends Phaser.Scene
 				}
 
 				case 'bee':
+					{
 					const bee = this.matter.add.sprite(x, y, 'bee').setFixedRotation();
 					this.bees.push(new BeeControl(this, bee, this.penquin))
 					this.obstacles.add('bee', bee.body as MatterJS.BodyType)
 					break
-
+					}
 			}
 		 })
 

@@ -168,7 +168,8 @@
                  "width":64,
                  "x":1404,
                  "y":142
-                }],
+                }
+              ],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,

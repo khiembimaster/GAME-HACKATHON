@@ -136,7 +136,7 @@ export default class SnowmanController
 		events.off('snowman-stomped', this.handleStomped, this)
 		this.scene.tweens.add({
 			targets: this.sprite,
-			displayHeight: 0,
+			displayHeight: -100,
 			y: this.sprite.y + (this.sprite.displayHeight * 0.5),
 			duration: 200,
 			onComplete: () => {
