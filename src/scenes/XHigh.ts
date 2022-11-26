@@ -1,24 +1,23 @@
 import StateMachine from '../statemachine/StateMachine'
 import { sharedInstance as events } from './EventCenter'
 
-export default class SnowmanController
-{   
-	public health: number
+export default class XHighControl
+{   public health
 	private scene: Phaser.Scene
 	private sprite: Phaser.Physics.Matter.Sprite
 	private stateMachine: StateMachine
+
 	private moveTime = 0
-	private spawnTime: number = 0
 
 	constructor(scene: Phaser.Scene, sprite: Phaser.Physics.Matter.Sprite)
-	{   
+	{  
 		this.health = 1;
 		this.scene = scene
 		this.sprite = sprite
-
+        this.sprite.setIgnoreGravity(true);
 		this.createAnimations()
 
-		this.stateMachine = new StateMachine(this, 'snowman')
+		this.stateMachine = new StateMachine(this, 'XHigh')
 
 		this.stateMachine.addState('idle', {
 			onEnter: this.idleOnEnter
@@ -31,27 +30,10 @@ export default class SnowmanController
 			onEnter: this.moveRightOnEnter,
 			onUpdate: this.moveRightOnUpdate
 		})
-		.addState('dead', {
-			onEnter: this.deadOnEnter,
-			onUpdate: this.deadOnUpdate,
-		})
+		.addState('dead')
 		.setState('idle')
 
 		events.on('snowman-stomped', this.handleStomped, this)
-	}
-
-	deadOnEnter(){
-		this.spawnTime = 2000
-	}
-
-	deadOnUpdate(){
-		if(this.spawnTime <= 0){
-			this.sprite.setScale(1)
-			this.health = 1
-			this.stateMachine.setState('idle');
-			events.on('snowman-stomped', this.handleStomped, this)
-		}
-		this.spawnTime--
 	}
 
 	destroy()
@@ -64,34 +46,33 @@ export default class SnowmanController
 		this.stateMachine.update(dt)
 	}
 
-	private createAnimations()
-	{
+	private createAnimations() {
 		this.sprite.anims.create({
 			key: 'idle',
-			frames: [{ key: 'snowman', frame: 'snowman_left_1.png' }]
+			frames: [{ key: 'boss', frame: 'bee_left_1.png' }]
 		})
 
 		this.sprite.anims.create({
 			key: 'move-left',
-			frames: this.sprite.anims.generateFrameNames('snowman', {
+			frames: this.sprite.anims.generateFrameNames('boss', {
 				start: 1,
-				end: 2,
-				prefix: 'snowman_left_',
+				end: 4,
+				prefix: 'bee_left_',
 				suffix: '.png'
 			}),
-			frameRate: 5,
+			frameRate: 100,
 			repeat: -1
 		})
 
 		this.sprite.anims.create({
 			key: 'move-right',
-			frames: this.sprite.anims.generateFrameNames('snowman', {
+			frames: this.sprite.anims.generateFrameNames('boss', {
 				start: 1,
-				end: 2,
-				prefix: 'snowman_right_',
+				end: 4,
+				prefix: 'bee_left_',
 				suffix: '.png'
 			}),
-			frameRate: 5,
+			frameRate: 50,
 			repeat: -1
 		})
 	}
@@ -150,17 +131,24 @@ export default class SnowmanController
 		{
 			return
 		}
-        if (this.health == 0){
-			events.off('snowman-stomped', this.handleStomped, this)
-			this.sprite.setScale(0.1)
-			// this.sprite.setStatic(true)
-			// this.sprite.setY(this.sprite.y + this.sprite.height)
-			// this.sprite.setActive(false)
-			this.stateMachine.setState('dead')
-	    }
-		else{
-			this.health--;
-			return;
+        else {if (this.health == 0){
+		    events.off('snowman-stomped', this.handleStomped, this)
+		    this.scene.tweens.add({
+		        targets: this.sprite,
+			    displayHeight: -100,
+			    y: this.sprite.y + (this.sprite.displayHeight * 0.5),
+			    duration: 200,
+			    onComplete: () => {
+				    this.sprite.destroy()
+			    }
+		    })
+		    this.stateMachine.setState('dead')
+	        }
+			else{
+				this.health--;
+				return;
+			}
 		}
+		
 	}
 }

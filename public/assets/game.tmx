@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="50" height="15" tilewidth="70" tileheight="70" infinite="0" nextlayerid="4" nextobjectid="16">
-
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="50" height="15" tilewidth="70" tileheight="70" infinite="0" nextlayerid="4" nextobjectid="21">
  <editorsettings>
-  <export target="../../../public/assets/game.json" format="json"/>
+  <export target="C:/Users/Dat/OneDrive - VNU-HCMUS/Desktop/game.json" format="json"/>
  </editorsettings>
  <tileset firstgid="1" name="iceworld" tilewidth="70" tileheight="70" tilecount="98" columns="14">
   <image source="sheet.png" width="980" height="490"/>
@@ -543,10 +541,19 @@
   <object id="4" name="star" x="1050" y="280" width="70" height="70"/>
   <object id="5" name="spikes" x="700" y="735" width="210" height="35"/>
   <object id="6" name="health" x="560" y="490" width="70" height="70"/>
+<<<<<<< HEAD
+  <object id="7" name="XLow" x="1890" y="700" width="70" height="70"/>
+  <object id="8" name="XLow" x="1750" y="280" width="70" height="70"/>
+  <object id="9" name="XLow" x="315" y="700" width="70" height="70"/>
+  <object id="10" name="boss" x="1404" y="142" width="64" height="64"/>
+  <object id="16" name="Y" x="2169.33" y="710" width="72" height="64"/>
+  <object id="19" name="XHigh" x="488" y="70" width="72" height="70"/>
+=======
   <object id="7" name="snowman" x="1890" y="700" width="70" height="70"/>
   <object id="8" name="snowman" x="1750" y="280" width="70" height="70"/>
   <object id="9" name="snowman" x="315" y="700" width="70" height="70"/>
   <object id="10" name="bee" x="1404" y="142" width="64" height="64"/>
   <object id="14" name="tree" x="2530.3" y="706.061" width="64" height="64"/>
+>>>>>>> d559d87d1b16b412bf2034b12867733a694ed991
  </objectgroup>
 </map>
