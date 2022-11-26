@@ -177,8 +177,19 @@
                  "rotation":0,
                  "visible":true,
                  "width":72,
-                 "x":2169.33333333333,
+                 "x":2169.33,
                  "y":710
+                }, 
+                {
+                 "class":"",
+                 "height":70,
+                 "id":19,
+                 "name":"XHigh",
+                 "rotation":0,
+                 "visible":true,
+                 "width":72,
+                 "x":488,
+                 "y":70
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -187,7 +198,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":18,
+ "nextobjectid":21,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.9.2",

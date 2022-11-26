@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="50" height="15" tilewidth="70" tileheight="70" infinite="0" nextlayerid="4" nextobjectid="18">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="50" height="15" tilewidth="70" tileheight="70" infinite="0" nextlayerid="4" nextobjectid="21">
  <editorsettings>
   <export target="C:/Users/Dat/OneDrive - VNU-HCMUS/Desktop/game.json" format="json"/>
  </editorsettings>
@@ -546,5 +546,6 @@
   <object id="9" name="XLow" x="315" y="700" width="70" height="70"/>
   <object id="10" name="boss" x="1404" y="142" width="64" height="64"/>
   <object id="16" name="Y" x="2169.33" y="710" width="72" height="64"/>
+  <object id="19" name="XHigh" x="488" y="70" width="72" height="70"/>
  </objectgroup>
 </map>

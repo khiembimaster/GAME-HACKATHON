@@ -3,7 +3,8 @@ import {BeeControl} from './Bee'
 import ObstaclesController from './ObstaclesController'
 import PlayerController from './PlayerController'
 import SnowmanController from './SnowmanController'
-import UpYControl from './UpY'
+import XHighControl from './XHigh'
+import UpYControl from './Y'
 
 export default class Game extends Phaser.Scene
 {
@@ -15,6 +16,7 @@ export default class Game extends Phaser.Scene
 	private XLows: SnowmanController[] = []
 	private bosses : BeeControl[] = []
     private Ys : UpYControl[] = []
+    private XHighs : XHighControl[] = []
 
 	constructor()
 	{
@@ -28,6 +30,7 @@ export default class Game extends Phaser.Scene
 		this.XLows = []
 		this.bosses = []
         this.Ys = []
+		this.XHighs = []
 		this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
 			this.destroy()
 		})
@@ -45,6 +48,7 @@ export default class Game extends Phaser.Scene
 		this.load.atlas('XLow', 'assets/snowman.png', 'assets/snowman.json')
 		this.load.atlas('boss', 'assets/Bee.png', 'assets/Bee.json')
 		this.load.atlas('Y', 'assets/snowman.png', 'assets/snowman.json')
+		this.load.atlas('XHigh', 'assets/Bee.png', 'assets/Bee.json')
 	}
 
 	create()
@@ -138,11 +142,17 @@ export default class Game extends Phaser.Scene
 					this.obstacles.add('Y', Y.body as MatterJS.BodyType)
 					break
 					}
+					case 'XHigh':
+						{
+						const XHigh = this.matter.add.sprite(x, y, 'XHigh').setFixedRotation();
+						this.XHighs.push(new XHighControl(this, XHigh))
+						this.obstacles.add('XHigh', XHigh.body as MatterJS.BodyType)
+						break
+						}
 			}
 		 })
 
-		this.matter.world.convertTilemapLayer(ground)
-		
+		this.matter.world.convertTilemapLayer(ground)	
 	}
 
 	destroy()
@@ -159,5 +169,6 @@ export default class Game extends Phaser.Scene
 		this.XLows.forEach(XLow => XLow.update(dt))
 		this.bosses.forEach(boss => boss.update(dt))
 		this.Ys.forEach(Y => Y.update(dt))
+		this.XHighs.forEach(XHigh => XHigh.update(dt))
 	}
 }
