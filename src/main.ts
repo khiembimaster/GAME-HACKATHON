@@ -12,8 +12,9 @@ const config: Phaser.Types.Core.GameConfig = {
 	physics: {
 		default: 'matter',
 		matter: {
-			debug: true
+			debug: false,
 		}
+		
 	},
 	scene: [Game, UI, GameOver, PopUp]
 }

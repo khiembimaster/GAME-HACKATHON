@@ -6,6 +6,7 @@ import XLowControl from './XLow'
 import XHighControl from './XHigh'
 import YControl from './Y'
 import TreeController from './TreeController'
+import PopUp from './PopUp'
 
 export default class Game extends Phaser.Scene {
 	private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
@@ -42,9 +43,9 @@ export default class Game extends Phaser.Scene {
 		this.load.atlas('penquin', 'assets/penquin.png', 'assets/penquin.json')
 		this.load.image('tiles', 'assets/sheet.png')
 
-		this.load.tilemapTiledJSON('tilemap', 'assets/map.json')
+		this.load.tilemapTiledJSON('tilemap', 'assets/game.json')
 
-		this.load.image('star', 'assets/star.png')
+		this.load.image('star', 'assets/sun.png')
 		this.load.image('health', 'assets/health.png')
 
 		this.load.atlas('XLow', 'assets/snowman.png', 'assets/snowman.json')
@@ -57,7 +58,6 @@ export default class Game extends Phaser.Scene {
 
 	create() {
 		this.scene.launch('ui')
-
 		const map = this.make.tilemap({ key: 'tilemap' })
 		const tileset = map.addTilesetImage('iceworld', 'tiles')
 
@@ -65,17 +65,16 @@ export default class Game extends Phaser.Scene {
 		ground.setCollisionByProperty({ collides: true })
 
 		map.createLayer('obstacles', tileset)
-
+		this.cameras.main.setBounds(0, 0, ground?.width, ground?.height);
 		const objectsLayer = map.getObjectLayer('objects')
 
 		objectsLayer.objects.forEach(objData => {
 			const { x = 0, y = 0, name, width = 0, height = 0 } = objData
 
 			switch (name) {
-				case 'penquin-spawn':
+				case 'player':
 					{
-						this.penquin = this.matter.add.sprite(x + (width * 0.5), y, 'penquin')
-							.setFixedRotation()
+						this.penquin = this.matter.add.sprite(x + (width * 0.5), y, 'penquin').setScale(0.5).setFixedRotation()
 
 						this.playerController = new PlayerController(
 							this,
@@ -86,6 +85,7 @@ export default class Game extends Phaser.Scene {
 						)
 
 						this.cameras.main.startFollow(this.penquin, true)
+						this.cameras.main.setZoom(1.5)
 						break
 					}
 
@@ -155,9 +155,10 @@ export default class Game extends Phaser.Scene {
 
 
 				case 'tree':
-					const tree = this.matter.add.sprite(x, y, 'tree').setFixedRotation();
+					const tree = this.matter.add.sprite(x, y, 'tree').setFixedRotation().setSize(70, 70);
 					tree.setSensor(true)
 					tree.setIgnoreGravity(true)
+					this.trees.push(new TreeController(this, tree))
 					this.obstacles.add('tree', tree.body as MatterJS.BodyType)
 					break
 
@@ -166,6 +167,7 @@ export default class Game extends Phaser.Scene {
 
 		this.matter.world.convertTilemapLayer(ground)
 
+		this.prologue()
 	}
 
 	destroy() {
@@ -181,6 +183,26 @@ export default class Game extends Phaser.Scene {
 		this.bosses.forEach(boss => boss.update(dt))
 		this.Ys.forEach(Y => Y.update(dt))
 		this.XHighs.forEach(XHigh => XHigh.update(dt))
-		this.tree.forEach(tree => tree.update(dt))
+	}
+
+	prologue() {
+		this.scene.launch('popUp', {
+			message: "Once up opon a time, there was a wealthy and magnificent country named MoreTree. With it vas resouce jungle and hard - working people, the kingdom remain beauty and peacefully.But the wealthy of this country has a cost.It's forest narrowing and narrower day by day.",
+			scene: "game",
+		})
+
+		this.time.delayedCall(10000, () => {
+			this.scene.launch('popUp', {
+				message: "When there was no more tree in the forest, the kingdom name change to NoTree. But the consequence of losing the forest is even more than that. Lurking in the dark come the greatest enemy of the kingdom - The Hive.",
+				scene: "game",
+			})
+		})
+
+		this.time.delayedCall(20000, () => {
+			this.scene.launch('popUp', {
+				message: "To defeated \"The Hive\" you have to collect the seed lost in the rune of NoTree kingdom and bring it back home to planing it. Good luck!!",
+				scene: "game"
+			})
+		})
 	}
 }
