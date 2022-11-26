@@ -1,45 +1,100 @@
-{"frames": [
-
-    {
-        "filename": "bee_left_1.png",
-        "frame": {"x":0,"y":0,"w":64,"h":64},
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
-        "sourceSize": {"w":64,"h":64}
-    },
-    {
-        "filename": "bee_left_2.png",
-        "frame": {"x":64,"y":0,"w":64,"h":64},
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
-        "sourceSize": {"w":64,"h":64}
-    },
-    {
-        "filename": "bee_left_3.png",
-        "frame": {"x":128,"y":0,"w":64,"h":64},
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
-        "sourceSize": {"w":64,"h":64}
-    },
-    {
-        "filename": "bee_left_4.png",
-        "frame": {"x":192,"y":0,"w":64,"h":64},
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
-        "sourceSize": {"w":64,"h":64}
-    }],
+{
+    "frames": [
+        {
+            "filename": "bee_left_1.png",
+            "frame": {
+                "x": 0,
+                "y": 0,
+                "w": 64,
+                "h": 64
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 64,
+                "h": 64
+            },
+            "sourceSize": {
+                "w": 64,
+                "h": 64
+            }
+        },
+        {
+            "filename": "bee_left_2.png",
+            "frame": {
+                "x": 64,
+                "y": 0,
+                "w": 64,
+                "h": 64
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 64,
+                "h": 64
+            },
+            "sourceSize": {
+                "w": 64,
+                "h": 64
+            }
+        },
+        {
+            "filename": "bee_left_3.png",
+            "frame": {
+                "x": 128,
+                "y": 0,
+                "w": 64,
+                "h": 64
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 64,
+                "h": 64
+            },
+            "sourceSize": {
+                "w": 64,
+                "h": 64
+            }
+        },
+        {
+            "filename": "bee_left_4.png",
+            "frame": {
+                "x": 192,
+                "y": 0,
+                "w": 64,
+                "h": 64
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 64,
+                "h": 64
+            },
+            "sourceSize": {
+                "w": 64,
+                "h": 64
+            }
+        }
+    ],
     "meta": {
         "app": "https://www.codeandweb.com/texturepacker",
         "version": "1.0",
         "image": "snowman.png",
         "format": "RGBA8888",
-        "size": {"w": 256,"h":64},
+        "size": {
+            "w": 256,
+            "h": 64
+        },
         "scale": "1",
         "smartupdate": "$TexturePacker:SmartUpdate:e526beb57341507f42ce16a5c6d1b2f8:4cc9194f37858b5b79c39610b760cc92:97365287be0f39d292457a96b7527d3c$"
     }
-    }
-    
+}

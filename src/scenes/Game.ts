@@ -3,16 +3,18 @@ import {BeeControl} from './Bee'
 import ObstaclesController from './ObstaclesController'
 import PlayerController from './PlayerController'
 import SnowmanController from './SnowmanController'
+import TreeController from './TreeController'
 
 export default class Game extends Phaser.Scene
 {
 	private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
-
 	private penquin!: Phaser.Physics.Matter.Sprite
 	private playerController?: PlayerController
 	private obstacles!: ObstaclesController
 	private snowmen: SnowmanController[] = []
 	private bees : BeeControl[] = []
+	private tree !: TreeController
+	attack!: Phaser.Input.Keyboard.Key
 
 	constructor()
 	{
@@ -22,6 +24,7 @@ export default class Game extends Phaser.Scene
 	init()
 	{
 		this.cursors = this.input.keyboard.createCursorKeys()
+		this.attack = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
 		this.obstacles = new ObstaclesController()
 		this.snowmen = []
 		this.bees = []
@@ -42,7 +45,7 @@ export default class Game extends Phaser.Scene
 
 		this.load.atlas('snowman', 'assets/snowman.png', 'assets/snowman.json')
 		this.load.atlas('bee', 'assets/Bee.png', 'assets/Bee.json')
-		
+		this.load.image('tree', 'assets/tree.png')
 	}
 
 	create()
@@ -73,6 +76,7 @@ export default class Game extends Phaser.Scene
 						this,
 						this.penquin,
 						this.cursors,
+						this.attack,
 						this.obstacles
 					)
 
@@ -139,6 +143,7 @@ export default class Game extends Phaser.Scene
 	{
 		this.scene.stop('ui')
 		this.snowmen.forEach(snowman => snowman.destroy())
+		this.bees.forEach(bee => bee.destroy())
 	}
 
 	update(t: number, dt: number)
@@ -146,5 +151,6 @@ export default class Game extends Phaser.Scene
 		this.playerController?.update(dt)
 		this.snowmen.forEach(snowman => snowman.update(dt))
 		this.bees.forEach(bee => bee.update(dt))
+
 	}
 }

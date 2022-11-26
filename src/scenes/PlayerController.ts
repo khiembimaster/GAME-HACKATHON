@@ -4,12 +4,12 @@ import { sharedInstance as events } from './EventCenter'
 import ObstaclesController from './ObstaclesController'
 
 type CursorKeys = Phaser.Types.Input.Keyboard.CursorKeys
-
 export default class PlayerController
 {
 	private scene: Phaser.Scene
 	private sprite: Phaser.Physics.Matter.Sprite
 	private cursors: CursorKeys
+	private attack!: Phaser.Input.Keyboard.Key
 	private obstacles: ObstaclesController
 
 	private stateMachine: StateMachine
@@ -17,11 +17,12 @@ export default class PlayerController
 
 	private lastSnowman?: Phaser.Physics.Matter.Sprite
 
-	constructor(scene: Phaser.Scene, sprite: Phaser.Physics.Matter.Sprite, cursors: CursorKeys, obstacles: ObstaclesController)
+	constructor(scene: Phaser.Scene, sprite: Phaser.Physics.Matter.Sprite, cursors: CursorKeys, keyboard: Phaser.Input.Keyboard.Key, obstacles: ObstaclesController)
 	{
 		this.scene = scene
 		this.sprite = sprite
 		this.cursors = cursors
+		this.attack = keyboard
 		this.obstacles = obstacles
 		this.createAnimations()
 
@@ -52,7 +53,12 @@ export default class PlayerController
 		.addState('dead', {
 			onEnter: this.deadOnEnter
 		})
+		.addState('attack', {
+			onEnter: this.attackOnEnter
+		})
 		.setState('idle')
+
+
 
 		this.sprite.setOnCollide((data: MatterJS.ICollisionPair) => {
 			const body = data.bodyB as MatterJS.BodyType
@@ -154,6 +160,12 @@ export default class PlayerController
 		{
 			this.stateMachine.setState('jump')
 		}
+
+		const attackJustPressed = Phaser.Input.Keyboard.JustDown(this.attack)
+		if (attackJustPressed)
+		{
+			this.stateMachine.setState('attack')
+		}
 	}
 
 	private walkOnEnter()
@@ -212,6 +224,12 @@ export default class PlayerController
 			this.sprite.flipX = false
 			this.sprite.setVelocityX(speed)
 		}
+	}
+
+	private attackOnEnter(){
+		// this.sprite.play('player-walk')
+		events.emit('snowman-stomped', this.lastSnowman)
+		this.stateMachine.setState('idle')
 	}
 
 	private spikeHitOnEnter()
@@ -341,6 +359,18 @@ export default class PlayerController
 				suffix: '.png'
 			}),
 			repeat: -1
+		})
+		
+		this.sprite.anims.create({
+			key: 'player-attack',
+			frameRate: 10,
+			frames: this.sprite.anims.generateFrameNames('penquin', {
+				start: 0,
+				end: 1,
+				prefix: 'penguin_attack0',
+				suffix: '.png',
+				zeroPad: 4
+			}),
 		})
 
 		this.sprite.anims.create({

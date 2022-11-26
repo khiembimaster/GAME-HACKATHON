@@ -2,11 +2,11 @@ import StateMachine from '../statemachine/StateMachine'
 import { sharedInstance as events } from './EventCenter'
 
 export default class SnowmanController
-{   public health
+{   
+	public health: number
 	private scene: Phaser.Scene
 	private sprite: Phaser.Physics.Matter.Sprite
 	private stateMachine: StateMachine
-
 	private moveTime = 0
 
 	constructor(scene: Phaser.Scene, sprite: Phaser.Physics.Matter.Sprite)
