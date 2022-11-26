@@ -32,6 +32,7 @@ export default class UI extends Phaser.Scene
 
 		events.on('star-collected', this.handleStarCollected, this)
 		events.on('health-changed', this.handleHealthChanged, this)
+		
 
 		this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
 			events.off('star-collected', this.handleStarCollected, this)
@@ -69,9 +70,9 @@ export default class UI extends Phaser.Scene
 		this.lastHealth = value
 	}
 
-	private handleStarCollected()
+	private handleStarCollected(value: number)
 	{
-		++this.starsCollected
+		this.starsCollected = value
 		this.starsLabel.text = `Stars: ${this.starsCollected}`
 	}
 }

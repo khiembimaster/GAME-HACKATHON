@@ -1,43 +1,44 @@
 import Phaser from 'phaser'
-import {BeeControl} from './Bee'
+import { BeeControl } from './Bee'
 import ObstaclesController from './ObstaclesController'
 import PlayerController from './PlayerController'
 import SnowmanController from './SnowmanController'
 import XHighControl from './XHigh'
 import UpYControl from './Y'
+import TreeController from './TreeController'
 
-export default class Game extends Phaser.Scene
-{
+export default class Game extends Phaser.Scene {
 	private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
-
 	private penquin!: Phaser.Physics.Matter.Sprite
 	private playerController?: PlayerController
 	private obstacles!: ObstaclesController
 	private XLows: SnowmanController[] = []
-	private bosses : BeeControl[] = []
+	private bosses: BeeControl[] = []
     private Ys : UpYControl[] = []
     private XHighs : XHighControl[] = []
+	private tree: TreeController[] = []
+	attack!: Phaser.Input.Keyboard.Key
 
-	constructor()
-	{
+	constructor() {
 		super('game')
 	}
 
-	init()
-	{
+	init() {
 		this.cursors = this.input.keyboard.createCursorKeys()
+		this.attack = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
 		this.obstacles = new ObstaclesController()
 		this.XLows = []
 		this.bosses = []
         this.Ys = []
-		this.XHighs = []
+		this.XHighs = []		
+		this.tree = []
+
 		this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
 			this.destroy()
 		})
 	}
 
-	preload()
-	{
+	preload() {
 		this.load.atlas('penquin', 'assets/penquin.png', 'assets/penquin.json')
 		this.load.image('tiles', 'assets/sheet.png')
 		this.load.tilemapTiledJSON('tilemap', 'assets/game.json')
@@ -49,10 +50,11 @@ export default class Game extends Phaser.Scene
 		this.load.atlas('boss', 'assets/Bee.png', 'assets/Bee.json')
 		this.load.atlas('Y', 'assets/snowman.png', 'assets/snowman.json')
 		this.load.atlas('XHigh', 'assets/Bee.png', 'assets/Bee.json')
+		this.load.image('tree', 'assets/star.png')
+
 	}
 
-	create()
-	{
+	create() {
 		this.scene.launch('ui')
 
 		const map = this.make.tilemap({ key: 'tilemap' })
@@ -65,26 +67,26 @@ export default class Game extends Phaser.Scene
 
 		const objectsLayer = map.getObjectLayer('objects')
 
-		 objectsLayer.objects.forEach(objData => {
+		objectsLayer.objects.forEach(objData => {
 			const { x = 0, y = 0, name, width = 0, height = 0 } = objData
 
-			switch (name)
-			{
+			switch (name) {
 				case 'penquin-spawn':
-				{
-					this.penquin = this.matter.add.sprite(x + (width * 0.5), y, 'penquin')
-						.setFixedRotation()
+					{
+						this.penquin = this.matter.add.sprite(x + (width * 0.5), y, 'penquin')
+							.setFixedRotation()
 
-					this.playerController = new PlayerController(
-						this,
-						this.penquin,
-						this.cursors,
-						this.obstacles
-					)
+						this.playerController = new PlayerController(
+							this,
+							this.penquin,
+							this.cursors,
+							this.attack,
+							this.obstacles
+						)
 
-					this.cameras.main.startFollow(this.penquin, true)
-					break
-				}
+						this.cameras.main.startFollow(this.penquin, true)
+						break
+					}
 
 				case 'XLow':
 				{
@@ -97,36 +99,36 @@ export default class Game extends Phaser.Scene
 				}
 
 				case 'star':
-				{
-					const star = this.matter.add.sprite(x, y, 'star', undefined, {
-						isStatic: true,
-						isSensor: true
-					})
+					{
+						const star = this.matter.add.sprite(x, y, 'star', undefined, {
+							isStatic: true,
+							isSensor: true
+						})
 
-					star.setData('type', 'star')
-					break
-				}
+						star.setData('type', 'star')
+						break
+					}
 
 				case 'health':
-				{
-					const health = this.matter.add.sprite(x, y, 'health', undefined, {
-						isStatic: true,
-						isSensor: true
-					})
+					{
+						const health = this.matter.add.sprite(x, y, 'health', undefined, {
+							isStatic: true,
+							isSensor: true
+						})
 
-					health.setData('type', 'health')
-					health.setData('healthPoints', 10)
-					break
-				}
+						health.setData('type', 'health')
+						health.setData('healthPoints', 10)
+						break
+					}
 
 				case 'spikes':
-				{
-					const spike = this.matter.add.rectangle(x + (width * 0.5), y + (height * 0.5), width, height, {
-						isStatic: true
-					})
-					this.obstacles.add('spikes', spike)
-					break
-				}
+					{
+						const spike = this.matter.add.rectangle(x + (width * 0.5), y + (height * 0.5), width, height, {
+							isStatic: true
+						})
+						this.obstacles.add('spikes', spike)
+						break
+					}
 
 				case 'boss':
 					{
@@ -149,26 +151,35 @@ export default class Game extends Phaser.Scene
 						this.obstacles.add('XHigh', XHigh.body as MatterJS.BodyType)
 						break
 						}
-			}
-		 })
 
-		this.matter.world.convertTilemapLayer(ground)	
+
+				case 'tree':
+					const tree = this.matter.add.sprite(x, y, 'tree').setFixedRotation();
+					tree.setSensor(true)
+					tree.setIgnoreGravity(true)
+					this.obstacles.add('tree', tree.body as MatterJS.BodyType)
+					break
+
+			}
+		})
+
+		this.matter.world.convertTilemapLayer(ground)
+
 	}
 
-	destroy()
-	{
+	destroy() {
 		this.scene.stop('ui')
 		this.XLows.forEach(XLow => XLow.destroy())
 		this.bosses.forEach(boss => boss.destroy())
 		this.Ys.forEach(Y => Y.destroy())
 	}
 
-	update(t: number, dt: number)
-	{
+	update(t: number, dt: number) {
 		this.playerController?.update(dt)
 		this.XLows.forEach(XLow => XLow.update(dt))
 		this.bosses.forEach(boss => boss.update(dt))
 		this.Ys.forEach(Y => Y.update(dt))
 		this.XHighs.forEach(XHigh => XHigh.update(dt))
+		this.tree.forEach(tree => tree.update(dt))
 	}
 }

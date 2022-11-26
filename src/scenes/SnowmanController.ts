@@ -2,12 +2,13 @@ import StateMachine from '../statemachine/StateMachine'
 import { sharedInstance as events } from './EventCenter'
 
 export default class SnowmanController
-{   public health
+{   
+	public health: number
 	private scene: Phaser.Scene
 	private sprite: Phaser.Physics.Matter.Sprite
 	private stateMachine: StateMachine
-
 	private moveTime = 0
+	private spawnTime: number = 0
 
 	constructor(scene: Phaser.Scene, sprite: Phaser.Physics.Matter.Sprite)
 	{   
@@ -30,10 +31,27 @@ export default class SnowmanController
 			onEnter: this.moveRightOnEnter,
 			onUpdate: this.moveRightOnUpdate
 		})
-		.addState('dead')
+		.addState('dead', {
+			onEnter: this.deadOnEnter,
+			onUpdate: this.deadOnUpdate,
+		})
 		.setState('idle')
 
 		events.on('snowman-stomped', this.handleStomped, this)
+	}
+
+	deadOnEnter(){
+		this.spawnTime = 2000
+	}
+
+	deadOnUpdate(){
+		if(this.spawnTime <= 0){
+			this.sprite.setScale(1)
+			this.health = 1
+			this.stateMachine.setState('idle');
+			events.on('snowman-stomped', this.handleStomped, this)
+		}
+		this.spawnTime--
 	}
 
 	destroy()
