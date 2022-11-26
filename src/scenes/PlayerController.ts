@@ -303,7 +303,7 @@ export default class PlayerController {
 		this.sprite.setVelocityY(-10)
 
 		events.emit('snowman-stomped', this.lastSnowman)
-		seeds++
+		this.seeds++
 
 
 		this.stateMachine.setState('idle')
