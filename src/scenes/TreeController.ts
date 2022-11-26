@@ -2,22 +2,19 @@ import StateMachine from '../statemachine/StateMachine'
 import { sharedInstance as events } from './EventCenter'
 
 export default class TreeController {
-    private water: number = 0
+    private water: number = 1
     private scene: Phaser.Scene
-    private image: Phaser.Physics.Matter.Image
+    private sprite: Phaser.Physics.Matter.Image
     private stateMachine: StateMachine
     private timer!: Phaser.Time.TimerEvent
 
-    constructor(scene: Phaser.Scene, image: Phaser.Physics.Matter.Image) {
+    constructor(scene: Phaser.Scene, image: Phaser.Physics.Matter.Sprite) {
         this.scene = scene
-        this.image = image
+        this.sprite = image
 
         this.stateMachine = new StateMachine(this, 'tree')
 
-        this.stateMachine.addState('grow', {
-            onEnter: this.enterTreeGrow,
-        })
-            .addState('idle', {
+        this.stateMachine.addState('idle', {
                 onEnter: this.enterTreeIdle,
             })
 
@@ -30,25 +27,21 @@ export default class TreeController {
         this.stateMachine.update(dt)
     }
 
-    private enterTreeGrow() {
-        this.water += 1
-        this.exitTreeIdle()
-        this.image.setScale(this.water / 10)
+    private enterTreeGrow(value: number) {
+        this.timer.remove()
+        this.water += value * 0.2
+        this.sprite.setScale(this.water)
 
         this.stateMachine.setState('idle')
     }
 
     private enterTreeIdle() {
         this.timer = this.scene.time.addEvent({
-            delay: 10000,
+            delay: 100000,
             callback: () => {
                 this.water -= 1
-                this.image.setScale(this.water / 10)
+                this.sprite.setScale(this.water)
             }
         })
-    }
-
-    private exitTreeIdle() {
-        this.timer.remove()
     }
 }

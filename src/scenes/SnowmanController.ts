@@ -133,17 +133,17 @@ export default class SnowmanController
 			return
 		}
         if (this.health == 0){
-		events.off('snowman-stomped', this.handleStomped, this)
-		this.scene.tweens.add({
-			targets: this.sprite,
-			displayHeight: 0,
-			y: this.sprite.y + (this.sprite.displayHeight * 0.5),
-			duration: 200,
-			onComplete: () => {
-				this.sprite.destroy()
-			}
-		})
-		this.stateMachine.setState('dead')
+			events.off('snowman-stomped', this.handleStomped, this)
+			this.scene.tweens.add({
+				targets: this.sprite,
+				displayHeight: 0,
+				y: this.sprite.y + (this.sprite.displayHeight * 0.5),
+				duration: 200,
+				onComplete: () => {
+					this.sprite.destroy()
+				}
+			})
+			this.stateMachine.setState('dead')
 	    }
 		else{
 			this.health--;

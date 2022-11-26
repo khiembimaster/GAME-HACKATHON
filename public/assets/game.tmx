@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="50" height="15" tilewidth="70" tileheight="70" infinite="0" nextlayerid="4" nextobjectid="12">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="50" height="15" tilewidth="70" tileheight="70" infinite="0" nextlayerid="4" nextobjectid="15">
  <editorsettings>
   <export target="game.json" format="json"/>
  </editorsettings>
@@ -545,5 +545,6 @@
   <object id="8" name="snowman" x="1750" y="280" width="70" height="70"/>
   <object id="9" name="snowman" x="315" y="700" width="70" height="70"/>
   <object id="10" name="bee" x="1404" y="142" width="64" height="64"/>
+  <object id="14" name="tree" x="2530.3" y="706.061" width="64" height="64"/>
  </objectgroup>
 </map>

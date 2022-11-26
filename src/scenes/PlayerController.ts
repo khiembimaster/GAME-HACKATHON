@@ -4,8 +4,7 @@ import { sharedInstance as events } from './EventCenter'
 import ObstaclesController from './ObstaclesController'
 
 type CursorKeys = Phaser.Types.Input.Keyboard.CursorKeys
-export default class PlayerController
-{
+export default class PlayerController {
 	private scene: Phaser.Scene
 	private sprite: Phaser.Physics.Matter.Sprite
 	private cursors: CursorKeys
@@ -14,11 +13,10 @@ export default class PlayerController
 
 	private stateMachine: StateMachine
 	private health = 100
-
+	private seeds = 0
 	private lastSnowman?: Phaser.Physics.Matter.Sprite
 
-	constructor(scene: Phaser.Scene, sprite: Phaser.Physics.Matter.Sprite, cursors: CursorKeys, keyboard: Phaser.Input.Keyboard.Key, obstacles: ObstaclesController)
-	{
+	constructor(scene: Phaser.Scene, sprite: Phaser.Physics.Matter.Sprite, cursors: CursorKeys, keyboard: Phaser.Input.Keyboard.Key, obstacles: ObstaclesController) {
 		this.scene = scene
 		this.sprite = sprite
 		this.cursors = cursors
@@ -32,70 +30,69 @@ export default class PlayerController
 			onEnter: this.idleOnEnter,
 			onUpdate: this.idleOnUpdate
 		})
-		.addState('walk', {
-			onEnter: this.walkOnEnter,
-			onUpdate: this.walkOnUpdate,
-			onExit: this.walkOnExit
-		})
-		.addState('jump', {
-			onEnter: this.jumpOnEnter,
-			onUpdate: this.jumpOnUpdate
-		})
-		.addState('spike-hit', {
-			onEnter: this.spikeHitOnEnter
-		})
-		.addState('snowman-hit', {
-			onEnter: this.snowmanHitOnEnter
-		})
-		.addState('snowman-stomp', {
-			onEnter: this.snowmanStompOnEnter
-		})
-		.addState('dead', {
-			onEnter: this.deadOnEnter
-		})
-		.addState('attack', {
-			onEnter: this.attackOnEnter
-		})
-		.setState('idle')
-
-
+			.addState('walk', {
+				onEnter: this.walkOnEnter,
+				onUpdate: this.walkOnUpdate,
+				onExit: this.walkOnExit
+			})
+			.addState('jump', {
+				onEnter: this.jumpOnEnter,
+				onUpdate: this.jumpOnUpdate
+			})
+			.addState('spike-hit', {
+				onEnter: this.spikeHitOnEnter
+			})
+			.addState('snowman-hit', {
+				onEnter: this.snowmanHitOnEnter
+			})
+			.addState('snowman-stomp', {
+				onEnter: this.snowmanStompOnEnter
+			})
+			.addState('dead', {
+				onEnter: this.deadOnEnter
+			})
+			.addState('attack', {
+				onEnter: this.attackOnEnter
+			})
+			.setState('idle')
 
 		this.sprite.setOnCollide((data: MatterJS.ICollisionPair) => {
 			const body = data.bodyB as MatterJS.BodyType
 
-			if (this.obstacles.is('spikes', body))
-			{
+			if (this.obstacles.is('spikes', body)) {
 				this.stateMachine.setState('spike-hit')
 				return
 			}
 
-			if (this.obstacles.is('snowman', body))
-			{
+			if (this.obstacles.is('snowman', body)) {
 				this.lastSnowman = body.gameObject
-				if (this.sprite.y < body.position.y)
-				{
+				if (this.sprite.y < body.position.y) {
 					// stomp on snowman
 					this.stateMachine.setState('snowman-stomp')
 				}
-				else
-				{
+				else {
 					// hit by snowman
 					this.stateMachine.setState('snowman-hit')
 				}
 				return
 			}
+			if (this.obstacles.is('tree', body)) {
+				//do something
 
+				events.emit('waterTree', this.seeds)
+				this.seeds = 0
+				events.emit('star-collected', this.seeds)
+				console.log("ontree")
+				return
+			}
 			const gameObject = body.gameObject
 
-			if (!gameObject)
-			{
+			if (!gameObject) {
 				return
 			}
 
-			if (gameObject instanceof Phaser.Physics.Matter.TileBody)
-			{
-				if (this.stateMachine.isCurrentState('jump'))
-				{
+			if (gameObject instanceof Phaser.Physics.Matter.TileBody) {
+				if (this.stateMachine.isCurrentState('jump')) {
 					this.stateMachine.setState('idle')
 				}
 				return
@@ -104,136 +101,118 @@ export default class PlayerController
 			const sprite = gameObject as Phaser.Physics.Matter.Sprite
 			const type = sprite.getData('type')
 
-			switch (type)
-			{
+			switch (type) {
 				case 'star':
-				{
-					events.emit('star-collected')
-					sprite.destroy()
-					break
-				}
+					{
+						const value = sprite.getData('healthPoints') ?? 10
+						this.seeds++
+						events.emit('star-collected', this.seeds)
+						sprite.destroy()
+						break
+					}
+
 
 				case 'health':
-				{
-					const value = sprite.getData('healthPoints') ?? 10 
-					this.health = Phaser.Math.Clamp(this.health + value, 0, 100)
-					events.emit('health-changed', this.health)
-					sprite.destroy()
-					break
-				}
+					{
+						const value = sprite.getData('healthPoints') ?? 10
+						this.health = Phaser.Math.Clamp(this.health + value, 0, 100)
+						events.emit('health-changed', this.health)
+						sprite.destroy()
+						break
+					}
 			}
 		})
 	}
 
-	update(dt: number)
-	{
+	update(dt: number) {
 		this.stateMachine.update(dt)
 	}
 
-	private setHealth(value: number)
-	{
+	private setHealth(value: number) {
 		this.health = Phaser.Math.Clamp(value, 0, 100)
 
 		events.emit('health-changed', this.health)
 
 		// TODO: check for death
-		if (this.health <= 0)
-		{
+		if (this.health <= 0) {
 			this.stateMachine.setState('dead')
 		}
 	}
 
-	private idleOnEnter()
-	{
+	private idleOnEnter() {
 		this.sprite.play('player-idle')
 	}
 
-	private idleOnUpdate()
-	{
-		if (this.cursors.left.isDown || this.cursors.right.isDown)
-		{
+	private idleOnUpdate() {
+		if (this.cursors.left.isDown || this.cursors.right.isDown) {
 			this.stateMachine.setState('walk')
 		}
 
 		const spaceJustPressed = Phaser.Input.Keyboard.JustDown(this.cursors.space)
-		if (spaceJustPressed)
-		{
+		if (spaceJustPressed) {
 			this.stateMachine.setState('jump')
 		}
 
 		const attackJustPressed = Phaser.Input.Keyboard.JustDown(this.attack)
-		if (attackJustPressed)
-		{
+		if (attackJustPressed) {
 			this.stateMachine.setState('attack')
 		}
 	}
 
-	private walkOnEnter()
-	{
+	private walkOnEnter() {
 		this.sprite.play('player-walk')
 	}
 
-	private walkOnUpdate()
-	{
+	private walkOnUpdate() {
 		const speed = 5
 
-		if (this.cursors.left.isDown)
-		{
+		if (this.cursors.left.isDown) {
 			this.sprite.flipX = true
 			this.sprite.setVelocityX(-speed)
 		}
-		else if (this.cursors.right.isDown)
-		{
+		else if (this.cursors.right.isDown) {
 			this.sprite.flipX = false
 			this.sprite.setVelocityX(speed)
 		}
-		else
-		{
+		else {
 			this.sprite.setVelocityX(0)
 			this.stateMachine.setState('idle')
 		}
 
 		const spaceJustPressed = Phaser.Input.Keyboard.JustDown(this.cursors.space)
-		if (spaceJustPressed)
-		{
+		if (spaceJustPressed) {
 			this.stateMachine.setState('jump')
 		}
 	}
 
-	private walkOnExit()
-	{
+	private walkOnExit() {
 		this.sprite.stop()
 	}
 
-	private jumpOnEnter()
-	{
+	private jumpOnEnter() {
 		this.sprite.setVelocityY(-12)
 	}
 
-	private jumpOnUpdate()
-	{
+	private jumpOnUpdate() {
 		const speed = 5
 
-		if (this.cursors.left.isDown)
-		{
+		if (this.cursors.left.isDown) {
 			this.sprite.flipX = true
 			this.sprite.setVelocityX(-speed)
 		}
-		else if (this.cursors.right.isDown)
-		{
+		else if (this.cursors.right.isDown) {
 			this.sprite.flipX = false
 			this.sprite.setVelocityX(speed)
 		}
 	}
 
-	private attackOnEnter(){
+	private attackOnEnter() {
 		// this.sprite.play('player-walk')
 		events.emit('snowman-stomped', this.lastSnowman)
 		this.stateMachine.setState('idle')
 	}
 
-	private spikeHitOnEnter()
-	{
+	private spikeHitOnEnter() {
 		this.sprite.setVelocityY(-12)
 
 		const startColor = Phaser.Display.Color.ValueToColor(0xffffff)
@@ -270,21 +249,16 @@ export default class PlayerController
 		this.setHealth(this.health - 10)
 	}
 
-	private snowmanHitOnEnter()
-	{
-		if (this.lastSnowman)
-		{
-			if (this.sprite.x < this.lastSnowman.x)
-			{
+	private snowmanHitOnEnter() {
+		if (this.lastSnowman) {
+			if (this.sprite.x < this.lastSnowman.x) {
 				this.sprite.setVelocityX(-20)
 			}
-			else
-			{
+			else {
 				this.sprite.setVelocityX(20)
 			}
 		}
-		else
-		{
+		else {
 			this.sprite.setVelocityY(-20)
 		}
 
@@ -322,8 +296,7 @@ export default class PlayerController
 		this.setHealth(this.health - 25)
 	}
 
-	private snowmanStompOnEnter()
-	{
+	private snowmanStompOnEnter() {
 		this.sprite.setVelocityY(-10)
 
 		events.emit('snowman-stomped', this.lastSnowman)
@@ -331,19 +304,17 @@ export default class PlayerController
 		this.stateMachine.setState('idle')
 	}
 
-	private deadOnEnter()
-	{
+	private deadOnEnter() {
 		this.sprite.play('player-death')
 
-		this.sprite.setOnCollide(() => {})
+		this.sprite.setOnCollide(() => { })
 
 		this.scene.time.delayedCall(1500, () => {
 			this.scene.scene.start('game-over')
 		})
 	}
 
-	private createAnimations()
-	{
+	private createAnimations() {
 		this.sprite.anims.create({
 			key: 'player-idle',
 			frames: [{ key: 'penquin', frame: 'penguin_walk01.png' }]
@@ -360,7 +331,7 @@ export default class PlayerController
 			}),
 			repeat: -1
 		})
-		
+
 		this.sprite.anims.create({
 			key: 'player-attack',
 			frameRate: 10,
