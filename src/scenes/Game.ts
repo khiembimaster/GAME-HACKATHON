@@ -3,6 +3,7 @@ import {BeeControl} from './Bee'
 import ObstaclesController from './ObstaclesController'
 import PlayerController from './PlayerController'
 import SnowmanController from './SnowmanController'
+import UpYControl from './UpY'
 
 export default class Game extends Phaser.Scene
 {
@@ -11,8 +12,9 @@ export default class Game extends Phaser.Scene
 	private penquin!: Phaser.Physics.Matter.Sprite
 	private playerController?: PlayerController
 	private obstacles!: ObstaclesController
-	private snowmen: SnowmanController[] = []
-	private bees : BeeControl[] = []
+	private XLows: SnowmanController[] = []
+	private bosses : BeeControl[] = []
+    private Ys : UpYControl[] = []
 
 	constructor()
 	{
@@ -23,9 +25,9 @@ export default class Game extends Phaser.Scene
 	{
 		this.cursors = this.input.keyboard.createCursorKeys()
 		this.obstacles = new ObstaclesController()
-		this.snowmen = []
-		this.bees = []
-
+		this.XLows = []
+		this.bosses = []
+        this.Ys = []
 		this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
 			this.destroy()
 		})
@@ -40,8 +42,9 @@ export default class Game extends Phaser.Scene
 		this.load.image('star', 'assets/star.png')
 		this.load.image('health', 'assets/health.png')
 
-		this.load.atlas('snowman', 'assets/snowman.png', 'assets/snowman.json')
-		this.load.atlas('bee', 'assets/Bee.png', 'assets/Bee.json')
+		this.load.atlas('XLow', 'assets/snowman.png', 'assets/snowman.json')
+		this.load.atlas('boss', 'assets/Bee.png', 'assets/Bee.json')
+		this.load.atlas('Y', 'assets/snowman.png', 'assets/snowman.json')
 	}
 
 	create()
@@ -79,13 +82,13 @@ export default class Game extends Phaser.Scene
 					break
 				}
 
-				case 'snowman':
+				case 'XLow':
 				{
-					const snowman = this.matter.add.sprite(x, y, 'snowman')
+					const XLow = this.matter.add.sprite(x, y, 'XLow')
 						.setFixedRotation()
 
-					this.snowmen.push(new SnowmanController(this, snowman))
-					this.obstacles.add('snowman', snowman.body as MatterJS.BodyType)
+					this.XLows.push(new SnowmanController(this, XLow))
+					this.obstacles.add('XLow', XLow.body as MatterJS.BodyType)
 					break
 				}
 
@@ -121,11 +124,18 @@ export default class Game extends Phaser.Scene
 					break
 				}
 
-				case 'bee':
+				case 'boss':
 					{
-					const bee = this.matter.add.sprite(x, y, 'bee').setFixedRotation();
-					this.bees.push(new BeeControl(this, bee, this.penquin))
-					this.obstacles.add('bee', bee.body as MatterJS.BodyType)
+					const boss = this.matter.add.sprite(x, y, 'boss').setFixedRotation();
+					this.bosses.push(new BeeControl(this, boss))
+					this.obstacles.add('boss', boss.body as MatterJS.BodyType)
+					break
+					}
+				case 'Y':
+					{
+					const Y = this.matter.add.sprite(x, y, 'Y').setFixedRotation();
+					this.Ys.push(new UpYControl(this, Y))
+					this.obstacles.add('Y', Y.body as MatterJS.BodyType)
 					break
 					}
 			}
@@ -138,13 +148,16 @@ export default class Game extends Phaser.Scene
 	destroy()
 	{
 		this.scene.stop('ui')
-		this.snowmen.forEach(snowman => snowman.destroy())
+		this.XLows.forEach(XLow => XLow.destroy())
+		this.bosses.forEach(boss => boss.destroy())
+		this.Ys.forEach(Y => Y.destroy())
 	}
 
 	update(t: number, dt: number)
 	{
 		this.playerController?.update(dt)
-		this.snowmen.forEach(snowman => snowman.update(dt))
-		this.bees.forEach(bee => bee.update(dt))
+		this.XLows.forEach(XLow => XLow.update(dt))
+		this.bosses.forEach(boss => boss.update(dt))
+		this.Ys.forEach(Y => Y.update(dt))
 	}
 }

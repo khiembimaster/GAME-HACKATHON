@@ -63,7 +63,7 @@ export default class PlayerController
 				return
 			}
 
-			if (this.obstacles.is('snowman', body))
+			if (this.obstacles.is('XLow', body) || this.obstacles.is('Y', body) || this.obstacles.is('boss', body))
 			{
 				this.lastSnowman = body.gameObject
 				if (this.sprite.y < body.position.y)
@@ -78,7 +78,8 @@ export default class PlayerController
 				}
 				return
 			}
-
+			
+            
 			const gameObject = body.gameObject
 
 			if (!gameObject)

@@ -17,7 +17,7 @@ export default class SnowmanController
 
 		this.createAnimations()
 
-		this.stateMachine = new StateMachine(this, 'snowman')
+		this.stateMachine = new StateMachine(this, 'XLow')
 
 		this.stateMachine.addState('idle', {
 			onEnter: this.idleOnEnter
@@ -50,12 +50,12 @@ export default class SnowmanController
 	{
 		this.sprite.anims.create({
 			key: 'idle',
-			frames: [{ key: 'snowman', frame: 'snowman_left_1.png' }]
+			frames: [{ key: 'XLow', frame: 'snowman_left_1.png' }]
 		})
 
 		this.sprite.anims.create({
 			key: 'move-left',
-			frames: this.sprite.anims.generateFrameNames('snowman', {
+			frames: this.sprite.anims.generateFrameNames('XLow', {
 				start: 1,
 				end: 2,
 				prefix: 'snowman_left_',
@@ -67,7 +67,7 @@ export default class SnowmanController
 
 		this.sprite.anims.create({
 			key: 'move-right',
-			frames: this.sprite.anims.generateFrameNames('snowman', {
+			frames: this.sprite.anims.generateFrameNames('XLow', {
 				start: 1,
 				end: 2,
 				prefix: 'snowman_right_',
@@ -132,22 +132,24 @@ export default class SnowmanController
 		{
 			return
 		}
-        if (this.health == 0){
-		events.off('snowman-stomped', this.handleStomped, this)
-		this.scene.tweens.add({
-			targets: this.sprite,
-			displayHeight: -100,
-			y: this.sprite.y + (this.sprite.displayHeight * 0.5),
-			duration: 200,
-			onComplete: () => {
-				this.sprite.destroy()
+        else {if (this.health == 0){
+		    events.off('snowman-stomped', this.handleStomped, this)
+		    this.scene.tweens.add({
+		        targets: this.sprite,
+			    displayHeight: -100,
+			    y: this.sprite.y + (this.sprite.displayHeight * 0.5),
+			    duration: 200,
+			    onComplete: () => {
+				    this.sprite.destroy()
+			    }
+		    })
+		    this.stateMachine.setState('dead')
+	        }
+			else{
+				this.health--;
+				return;
 			}
-		})
-		this.stateMachine.setState('dead')
-	    }
-		else{
-			this.health--;
-			return;
 		}
+		
 	}
 }
