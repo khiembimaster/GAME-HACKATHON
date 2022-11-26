@@ -17,7 +17,7 @@ export default class Game extends Phaser.Scene {
 	private bosses: BossControl[] = []
     private Ys : YControl[] = []
     private XHighs : XHighControl[] = []
-	private tree: TreeController[] = []
+	private trees: TreeController[] = []
 	attack!: Phaser.Input.Keyboard.Key
 
 	constructor() {
@@ -32,7 +32,7 @@ export default class Game extends Phaser.Scene {
 		this.bosses = []
         this.Ys = []
 		this.XHighs = []		
-		this.tree = []
+		this.trees = []
 
 		this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
 			this.destroy()
