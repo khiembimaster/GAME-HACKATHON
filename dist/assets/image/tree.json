@@ -1,0 +1,104 @@
+{
+	"textures": [
+		{
+			"image": "tree.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 182,
+				"h": 312
+			},
+			"scale": 2,
+			"frames": [
+				{
+					"filename": "tree-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 128,
+						"h": 224
+					},
+					"spriteSourceSize": {
+						"x": 22,
+						"y": 68,
+						"w": 82,
+						"h": 126
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 82,
+						"h": 126
+					}
+				},
+				{
+					"filename": "tree-3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 128,
+						"h": 224
+					},
+					"spriteSourceSize": {
+						"x": 14,
+						"y": 56,
+						"w": 94,
+						"h": 138
+					},
+					"frame": {
+						"x": 85,
+						"y": 1,
+						"w": 94,
+						"h": 138
+					}
+				},
+				{
+					"filename": "tree-2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 128,
+						"h": 224
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 34,
+						"w": 84,
+						"h": 160
+					},
+					"frame": {
+						"x": 1,
+						"y": 141,
+						"w": 84,
+						"h": 160
+					}
+				},
+				{
+					"filename": "tree-4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 128,
+						"h": 224
+					},
+					"spriteSourceSize": {
+						"x": 14,
+						"y": 24,
+						"w": 94,
+						"h": 170
+					},
+					"frame": {
+						"x": 87,
+						"y": 141,
+						"w": 94,
+						"h": 170
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:24d3ea42b0070e5b9eb9a33126380dfb:106f7f5f00f1ab9bd517d5b8300d6d74:4e275c72fcbe49e6d6a6cf9ad6765a40$"
+	}
+}

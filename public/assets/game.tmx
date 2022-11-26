@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="50" height="15" tilewidth="70" tileheight="70" infinite="0" nextlayerid="4" nextobjectid="21">
  <editorsettings>
-  <export target="C:/Users/Dat/OneDrive - VNU-HCMUS/Desktop/game.json" format="json"/>
+  <export target="../../../../../../../Dat/OneDrive - VNU-HCMUS/Desktop/game.json" format="json"/>
  </editorsettings>
  <tileset firstgid="1" name="iceworld" tilewidth="70" tileheight="70" tilecount="98" columns="14">
   <image source="sheet.png" width="980" height="490"/>
@@ -513,7 +513,7 @@
   <object id="48" name="tree" x="129.333" y="487.712" width="75.7576" height="72.1667"/>
   <object id="52" name="spikes" x="630.303" y="908.697" width="139.394" height="65.0909"/>
   <object id="55" name="spikes" x="351.636" y="905.455" width="139.394" height="65.0909"/>
-  <object id="56" name="spikes" x="1960" y="908" width="632" height="74.6667"/>
+  <object id="56" name="spikes" x="1960" y="892" width="632" height="90.6667"/>
   <object id="57" name="spikes" x="977" y="344" width="141" height="72"/>
   <object id="59" name="spikes" x="1262.5" y="343" width="141" height="72"/>
  </objectgroup>
